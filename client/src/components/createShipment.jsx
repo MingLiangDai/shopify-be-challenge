@@ -113,7 +113,9 @@ const CreateShipmentForm = ({ itemList, signalRefresh }) => {
         })}
       </CardContent>
       <CardActions>
-        <Button onClick={handleClick}>Complete Shipment</Button>
+        <Button disabled={inventoryList.length === 0} onClick={handleClick}>
+          Complete Shipment
+        </Button>
       </CardActions>
     </Card>
   );
