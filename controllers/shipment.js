@@ -74,7 +74,33 @@ const createShipment = async (req, res, next) => {
   }
 };
 
+const deleteShipment = async (req, res, next) => {
+  try {
+    const i = await Shipment.findById(req.params.id);
+    console.log(i);
+    const shipment = await Shipment.findByIdAndRemove(req.params.id);
+    if (!shipment)
+      return next(
+        new ErrorResponse(`Shipment with id ${req.params.id} is not found`, 400)
+      );
+    res.send("Shipment deleted successfully.");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteAllShipments = async (req, res, next) => {
+  try {
+    const shipments = await Shipment.deleteMany({});
+    res.send(`${shipments.deletedCount} shipments deleted successfully.`);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getShipments,
   createShipment,
+  deleteShipment,
+  deleteAllShipments,
 };

@@ -3,21 +3,26 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import AddItemForm from "./components/addItemForm";
 import ItemList from "./components/itemList";
+import ShipmentList from "./components/shipmentList";
+import CreateShipmentForm from "./components/createShipment";
 import config from "./config/config";
 
 function App() {
+  const [itemList, setItemList] = useState([]);
+  const [shipmentList, setShipmentList] = useState([]);
+
   const signalRefresh = async () => {
     // always call this instead of mutating global state
     // cuz we want to test that it actually worked in the backend
-    const res = await axios.get(`${config.API_URL}/items`);
-    setItemList(res.data);
+    const items = await axios.get(`${config.API_URL}/items`);
+    setItemList(items.data);
+    const shipments = await axios.get(`${config.API_URL}/shipments`);
+    setShipmentList(shipments.data);
   };
 
   useEffect(() => {
     signalRefresh();
   }, []);
-
-  const [itemList, setItemList] = useState([]);
 
   return (
     <div className="App">
@@ -27,6 +32,18 @@ function App() {
         </Grid>
         <Grid item>
           <ItemList itemList={itemList} signalRefresh={signalRefresh} />
+        </Grid>
+        <Grid item>
+          <CreateShipmentForm
+            itemList={itemList}
+            signalRefresh={signalRefresh}
+          />
+        </Grid>
+        <Grid item>
+          <ShipmentList
+            shipmentList={shipmentList}
+            signalRefresh={signalRefresh}
+          />
         </Grid>
       </Grid>
     </div>

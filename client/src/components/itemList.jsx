@@ -12,6 +12,7 @@ import {
   Modal,
   TextField,
   CardActions,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 import config from "../config/config";
@@ -40,6 +41,11 @@ const ItemList = ({ itemList, signalRefresh }) => {
     signalRefresh();
   };
 
+  const clearAll = async () => {
+    await axios.delete(`${config.API_URL}/items`);
+    signalRefresh();
+  };
+
   const handleSave = async () => {
     const data = selected;
     await axios.put(`${config.API_URL}/items`, data);
@@ -51,12 +57,13 @@ const ItemList = ({ itemList, signalRefresh }) => {
     setOpen(true);
     setSelected(item);
   };
+
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Card sx={descModalStyle}>
           <CardContent>
-            <Typography variant="h5">Add Inventory Item</Typography>
+            <Typography variant="h5">Edit Inventory Item</Typography>
             <TextField
               label="Name"
               variant="outlined"
@@ -68,9 +75,9 @@ const ItemList = ({ itemList, signalRefresh }) => {
             <TextField
               label="Description"
               variant="outlined"
-              value={selected.desc}
+              value={selected.description}
               onChange={(e) => {
-                handleChange("desc", e.target.value);
+                handleChange("description", e.target.value);
               }}
             />
             <TextField
@@ -90,7 +97,10 @@ const ItemList = ({ itemList, signalRefresh }) => {
       </Modal>
       <Card>
         <CardContent>
-          <Typography variant="h5">Inventory Items</Typography>
+          <Box container justifyContent="space-between">
+            <Typography variant="h5">Inventory Items</Typography>
+            <Button onClick={clearAll}>Clear All</Button>
+          </Box>
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
